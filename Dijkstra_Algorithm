@@ -1,0 +1,75 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 10
+int main()
+{
+	system("clear");
+	int dist[MAX][MAX],sta[MAX],min[MAX],via[MAX],sum=0;
+	int i,j,k,x,source,dest,amin,n,dd;
+	FILE *fp;
+	char ch[50];
+	
+	printf("\nEnter the number of nodes:");
+	scanf("%d",&n);
+
+	printf("\nEnter the name of the file for input:\n");
+	scanf("%s",ch);
+	fp=fopen(ch,"r+");
+
+	for(i=0;i<n;i++)
+	{
+		for(j=0;j<n;j++)
+		{
+			fscanf(fp,"%d",&x);
+			dist[i][j]=x;
+		}
+	}
+	for(i=0;i<n;i++)
+	{
+		sta[i]=0;
+		min[i]=99999;
+	}
+	printf("\nEnter source and destination indexes:\n");
+	scanf("%d",&source);
+	printf("\nEnter the destination:\n");
+	scanf("%d",&dest);
+	k=source;
+	amin=0;
+	while(sta[dest]!=2)
+	{
+		sta[k]=2;
+		for(i=0;i<n;i++)
+		{
+			if(dist[k][i]&&sta[i]!=2)
+			{
+				dd=amin+dist[k][i];
+				if(dd<min[i])
+				{
+					min[i]=dd;
+					via[i]=k;
+				}
+				sta[i]=1;
+			}
+		}
+		amin=99999;
+		for(i=0;i<n;i++)
+		{
+			if(sta[i]==1&&min[i]<amin)
+			{
+				amin=min[i];
+				k=i;
+			}
+		}
+	}
+	printf("\n-----------------Required Path-----------------------------\n");
+	printf(" %c",'A'+dest);
+	for(k=via[dest];k!=source;k=via[k])
+	{
+		printf(" <---%c",'A'+k);
+		sum=sum+dist[via[k]][k];
+	}
+	printf(" <--%c",'A'+source);
+	printf("\n cost of the path:%d\n",sum+dist[via[dest]][dest]);
+	fclose(fp);
+return 0;
+}
